@@ -1,21 +1,45 @@
+declare let module: any;
+
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import { AppContainer } from 'react-hot-loader';
 
 // import all custom styles
 import './Style/App.less';
 
 // import framework API surface
-import './webrx-react';
-
-// import the App view and view model
-import { AppViewModel, AppView } from './Components';
+import * as wxr from './webrx-react';
 
 // grab the DOM entry point
 const container = document.getElementById('app');
 
 if (container) {
-  ReactDOM.render(
-    <AppView viewModel={ new AppViewModel() } copyright='WebRx-React' />,
-    container
+  const props = {
+    viewModel: new wxr.Components.AppViewModel(),
+    copyright: 'webrx-react',
+  };
+
+  render(
+    (
+      <AppContainer>
+        <wxr.Components.AppView { ...props } />
+      </AppContainer>
+    ),
+    container,
   );
+
+  if ((module as any).hot) {
+    (module as any).hot.accept('./webrx-react', () => {
+      const HMRTestApp = require('./Components/Common/App/AppView').AppView;
+
+      render(
+        (
+          <AppContainer>
+            <HMRTestApp { ...props } />
+          </AppContainer>
+        ),
+        container
+      );
+    });
+  }
 }

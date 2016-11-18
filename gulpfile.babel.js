@@ -482,7 +482,11 @@ gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
   const webpackConfig = getWebpackConfig(config.builds.debug);
   const uri = `http://${ config.host === '0.0.0.0' ? 'localhost' : config.host }:${ config.port }`;
 
-  webpackConfig.entry['webrx-react'].unshift(`webpack-dev-server/client?${ uri }`, 'webpack/hot/only-dev-server');
+  webpackConfig.entry['webrx-react'].unshift(
+    'react-hot-loader/patch',
+    `webpack-dev-server/client?${ uri }`,
+    'webpack/hot/only-dev-server'
+  );
   webpackConfig.output.path = path.resolve(config.dirs.build, config.builds.watch);
   webpackConfig.output.publicPath = config.publicPath;
   // remove ExtractTextPlugin
@@ -501,7 +505,7 @@ gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
     { test: /\.less$/, loader: 'style!css?sourceMap!less?sourceMap' },
     { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?mimetype=application/font-woff' },
     { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url' },
-    { test: /\.tsx?$/, loaders: [ 'react-hot', 'ts' ] },
+    { test: /\.tsx?$/, loaders: [ 'react-hot-loader/webpack', 'ts' ] },
   ];
 
   const compiler = webpack(webpackConfig);
