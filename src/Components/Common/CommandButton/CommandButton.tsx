@@ -1,12 +1,13 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
-import { IDisposable } from  'rx';
+import { IDisposable } from 'rx';
 import * as wx from 'webrx';
-import { Button, ButtonProps } from 'react-bootstrap';
+// import { Button, ButtonProps } from 'react-bootstrap';
+import { Button, IButtonProps } from 'office-ui-fabric-react';
 
-import './CommandButton.less';
+// import './CommandButton.less';
 
-export interface CommandButtonProps extends ButtonProps {
+export interface CommandButtonProps extends IButtonProps {
   command?: wx.ICommand<any> | { (): wx.ICommand<any> };
   commandParameter?: any;
   stopPropagation?: boolean;
@@ -60,13 +61,16 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
       this.getCommand().canExecute(this.getParam());
 
     return (
-      <Button { ...rest } className={ classNames('CommandButton', className, { plain: props.plain }) } disabled={ canExecute !== true } onClick={ e => this.handleClick(e) }>
-        { children }
+      <Button { ...rest }
+        className={classNames('CommandButton', className, { plain: props.plain })}
+        disabled={canExecute !== true}
+        onClick={e => this.handleClick(e)}>
+        {children}
       </Button>
     );
   }
 
-  private handleClick(e: React.MouseEvent<Button>) {
+  private handleClick(e: React.MouseEvent<any>) {
     if (this.props.command == null) {
       if (this.props.onClick != null) {
         // onClick was supplied so we don't override default click handling unless explicitly defined
